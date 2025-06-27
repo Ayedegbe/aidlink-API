@@ -7,7 +7,7 @@
     body { font-family: Arial, sans-serif; margin: 2em; }
     h1 { color: #2c3e50; }
     .section { margin-bottom: 2em; }
-    input, button { padding: 0.5em; margin: 0.2em; }
+    input, select, button { padding: 0.5em; margin: 0.2em; }
     pre { background: #f4f4f4; padding: 1em; border: 1px solid #ccc; }
   </style>
 </head>
@@ -24,18 +24,43 @@
   </div>
 
   <div class="section">
+    <h2>Add Location</h2>
+    <input id="locationName" placeholder="Location Name" />
+    <input id="locationRegion" placeholder="Region" />
+    <button onclick="addLocation()">Add Location</button>
+    <pre id="locationResult"></pre>
+  </div>
+
+  <div class="section">
+    <h2>Request Supplies</h2>
+    <select id="requestLocation"></select>
+    <input id="requestSupply" placeholder="Supply Name" />
+    <input id="requestQuantity" placeholder="Quantity" type="number" />
+    <button onclick="submitRequest()">Submit Request</button>
+    <pre id="requestResult"></pre>
+  </div>
+
+  <div class="section">
     <h2>All Supplies</h2>
     <button onclick="getSupplies()">Load Supplies</button>
     <pre id="allSupplies"></pre>
   </div>
 
+  <div class="section">
+    <h2>All Locations</h2>
+    <button onclick="getLocations()">Load Locations</button>
+    <pre id="allLocations"></pre>
+  </div>
+
   <script>
+    const api = "http://localhost:8000";
+
     function addSupply() {
       const name = document.getElementById("supplyName").value;
       const quantity = parseInt(document.getElementById("supplyQuantity").value);
       const unit = document.getElementById("supplyUnit").value || "units";
 
-      fetch("/supplies", {
+      fetch(api + "/supplies", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, quantity, unit })
@@ -44,22 +69,68 @@
       .then(data => {
         document.getElementById("supplyResult").textContent = JSON.stringify(data, null, 2);
         getSupplies();
-      })
-      .catch(err => {
-        document.getElementById("supplyResult").textContent = "Error: " + err.message;
       });
     }
 
     function getSupplies() {
-      fetch("/supplies")
+      fetch(api + "/supplies")
         .then(res => res.json())
         .then(data => {
           document.getElementById("allSupplies").textContent = JSON.stringify(data, null, 2);
-        })
-        .catch(err => {
-          document.getElementById("allSupplies").textContent = "Error: " + err.message;
         });
     }
+
+    function addLocation() {
+      const name = document.getElementById("locationName").value;
+      const region = document.getElementById("locationRegion").value;
+
+      fetch(api + "/locations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, region })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("locationResult").textContent = JSON.stringify(data, null, 2);
+        getLocations();
+      });
+    }
+
+    function getLocations() {
+      fetch(api + "/locations")
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("allLocations").textContent = JSON.stringify(data, null, 2);
+          const dropdown = document.getElementById("requestLocation");
+          dropdown.innerHTML = "";
+          data.forEach(loc => {
+            const option = document.createElement("option");
+            option.value = loc.id;
+            option.text = loc.name + " - " + loc.region;
+            dropdown.add(option);
+          });
+        });
+    }
+
+    function submitRequest() {
+      const locationId = parseInt(document.getElementById("requestLocation").value);
+      const supplyName = document.getElementById("requestSupply").value;
+      const quantity = parseInt(document.getElementById("requestQuantity").value);
+
+      fetch(api + "/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locationId, supplyName, quantity })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("requestResult").textContent = JSON.stringify(data, null, 2);
+      });
+    }
+
+    // Preload on start
+    getSupplies();
+    getLocations();
   </script>
 </body>
 </html>

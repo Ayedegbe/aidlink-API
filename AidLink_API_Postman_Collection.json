@@ -1,0 +1,127 @@
+{
+  "info": {
+    "name": "AidLink API Collection",
+    "_postman_id": "aidlink-api-collection-id",
+    "description": "Postman collection for testing AidLink RESTful API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Supplies",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/supplies",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "supplies"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Add Supply",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Water Bottles\",\n  \"quantity\": 100,\n  \"unit\": \"bottles\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/supplies",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "supplies"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Locations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/locations",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "locations"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Add Location",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Lagos Central\",\n  \"region\": \"West\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/locations",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "locations"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Submit Aid Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"locationId\": 1,\n  \"supplyName\": \"Water Bottles\",\n  \"quantity\": 50\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/requests",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "requests"
+          ]
+        }
+      }
+    }
+  ]
+}
