@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AidLink Frontend</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    h1 { color: #2c3e50; }
+    .section { margin-bottom: 2em; }
+    input, button { padding: 0.5em; margin: 0.2em; }
+    pre { background: #f4f4f4; padding: 1em; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>AidLink: Relief Resource Tracker</h1>
+
+  <div class="section">
+    <h2>Add Supply</h2>
+    <input id="supplyName" placeholder="Name" />
+    <input id="supplyQuantity" placeholder="Quantity" type="number" />
+    <input id="supplyUnit" placeholder="Unit" />
+    <button onclick="addSupply()">Add Supply</button>
+    <pre id="supplyResult"></pre>
+  </div>
+
+  <div class="section">
+    <h2>All Supplies</h2>
+    <button onclick="getSupplies()">Load Supplies</button>
+    <pre id="allSupplies"></pre>
+  </div>
+
+  <script>
+    function addSupply() {
+      const name = document.getElementById("supplyName").value;
+      const quantity = parseInt(document.getElementById("supplyQuantity").value);
+      const unit = document.getElementById("supplyUnit").value || "units";
+
+      fetch("/supplies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, quantity, unit })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("supplyResult").textContent = JSON.stringify(data, null, 2);
+        getSupplies();
+      })
+      .catch(err => {
+        document.getElementById("supplyResult").textContent = "Error: " + err.message;
+      });
+    }
+
+    function getSupplies() {
+      fetch("/supplies")
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("allSupplies").textContent = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+          document.getElementById("allSupplies").textContent = "Error: " + err.message;
+        });
+    }
+  </script>
+</body>
+</html>
